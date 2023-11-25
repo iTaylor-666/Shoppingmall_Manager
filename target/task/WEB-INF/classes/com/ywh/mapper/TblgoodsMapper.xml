@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--通过namespace属性和自定义的接口关联-->
+<mapper namespace="com.ywh.mapper.TblgoodsMapper">
+    <select id="findGoodsList" resultType="tblgoods">
+        select a.*,b.typeName from tblgoods a inner join tbltype b on
+        a.goodsTypeId=b.goodsTypeId
+        <where>
+            <if test="goodsBrand != null and goodsBrand != ''">
+                and goodsBrand like concat('%',#{goodsBrand},'%')
+            </if>
+            <if test="minPrice &gt; 0">
+                and goodsPrice &gt;= #{minPrice}
+            </if>
+            <if test="maxPrice &gt; 0">
+                and goodsPrice &lt;= #{maxPrice}
+            </if>
+            <if test="goodsName != null and goodsName != ''">
+                and goodsName like concat('%',#{goodsName},'%')
+            </if>
+        </where>
+    </select>
+    <!-- <select id="findBrandsList" resultType="java.lang.String">-->
+    <!-- select goodsbrand from tblgoods GROUP BY goodsbrand-->
+    <!-- </select>-->
+    <insert id="addGoods">
+        insert into tblgoods(
+            goodsTypeId,
+            goodsNo,
+            goodsName,
+            goodsBrand,
+            goodsPrice,
+            goodsUnits,
+            goodsDiscount,
+            repertoryNum,
+            createDate,
+            deadDate,
+            mainImage,
+            image1,
+            image2,
+            image3,
+            image4
+        ) values(
+                    #{goodsTypeId},
+                    #{goodsNo},
+                    #{goodsName},
+                    #{goodsBrand},
+                    #{goodsPrice},
+                    #{goodsUnits},
+                    #{goodsDiscount},
+                    #{repertoryNum},
+                    #{createDate},
+                    #{deadDate},
+                    #{mainImage},
+                    #{image1},
+                    #{image2},
+                    #{image3},
+                    #{image4}
+                )
+    </insert>
+    <delete id="delGoods">
+        delete from tblgoods where goodsId=#{goodsId}
+    </delete>
+    <select id="findGoods" resultType="tblgoods">
+        select * from tblgoods where goodsId = #{goodsId}
+    </select>
+    <update id="updateGoods">
+        update tblgoods
+        <set>
+            goodsTypeId=#{goodsTypeId},
+            goodsNo=#{goodsNo},
+            goodsName=#{goodsName},
+            goodsBrand=#{goodsBrand},
+            goodsPrice=#{goodsPrice},
+            goodsUnits=#{goodsUnits},
+            goodsDiscount=#{goodsDiscount},
+            repertoryNum=#{repertoryNum},
+            createDate=#{createDate},
+            deadDate=#{deadDate},
+            <if test="mainImage != null and mainImage != ''">
+                mainImage=#{mainImage},
+            </if>
+            <if test="image1 != null and image1 != ''">
+                image1=#{image1},
+            </if>
+            <if test="image2 != null and image2 != ''">
+                image2=#{image2},
+            </if>
+            <if test="image3 != null and image3 != ''">
+                image3=#{image3},
+            </if>
+            <if test="image4 != null and image4 != ''">
+                image4=#{image4}
+            </if>
+        </set>
+        where goodsId = #{goodsId}
+    </update>
+</mapper>

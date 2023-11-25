@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../javascript/jquery.js"></script>
+    <script src="../layui/layui.js"></script>
+    <link rel="stylesheet" href="../layui/css/layui.css">
+</head>
+<body>
+    <input type="file" name="myFile" id="myFile" onchange="UpdateFile()"/>
+</body>
+
+<script>
+    //上传文件
+    function UpdateFile(){
+        //用户文件内容(文件)
+        var fileName = $("#myFile").val();
+
+        // 判断文件是否为空
+        if ( fileName == "") {
+            layer.msg("请选择上传的文件",{icon:1,time:1000});
+            return false;
+        }
+
+        //判断文件类型（根据后缀名判断）
+        var suffix =  fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
+        if(suffix == "jpg" || suffix == "png"){
+            //判断文件大小
+            var fileSize = $("#myFile")[0].files[0].size;
+            if (fileSize>104857600) {
+                layer.msg("上传的附件不能大于100M",{icon:1,time:2000});
+                return false;
+            }
+
+
+            //这里需要实例化一个FormData来进行文件上传
+            var formData = new FormData();
+            formData.append("myFile",$("#myFile")[0].files[0]);
+            formData.append("acc","zhangsan")
+            formData.append("pwd","123456")
+            $.ajax({
+                type:'POST',
+                url:"../upload",
+                data:formData,
+                async:false,
+                processData:false,
+                contentType:false,
+                success:function(res){
+                    layer.msg("上传成功：<%=request.getContextPath()%>"+res)
+                }
+            });
+        }else{
+            layer.msg("请选择xls格式的文件!",{icon:1,time:2000});
+            return false;
+        }
+    }
+</script>
+</html>
